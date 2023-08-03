@@ -1,0 +1,7 @@
+host: localhost:50051
+
+db:
+  host: localhost:5432
+  name: chad_integration
+  user: root
+  pass: root
