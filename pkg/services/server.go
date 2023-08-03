@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/alpha-omega-corp/authentication-svc/pkg/models"
-	"github.com/alpha-omega-corp/authentication-svc/pkg/services/pb"
+	"github.com/alpha-omega-corp/authentication-svc/pkg/proto"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/uptrace/bun"
 	"golang.org/x/crypto/bcrypt"
@@ -13,7 +13,7 @@ import (
 )
 
 type Server struct {
-	pb.UnimplementedAuthServiceServer
+	proto.UnimplementedAuthServiceServer
 	db *bun.DB
 }
 
@@ -23,7 +23,7 @@ func NewServer(db *bun.DB) *Server {
 	}
 }
 
-func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+func (s *Server) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
 	encPw, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
@@ -38,12 +38,12 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 		return nil, errDb
 	}
 
-	return &pb.RegisterResponse{
+	return &proto.RegisterResponse{
 		Status: http.StatusCreated,
 	}, nil
 }
 
-func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+func (s *Server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.LoginResponse, error) {
 	user := new(models.User)
 	err := s.db.NewSelect().Model(user).Where("email = ?", req.Email).Scan(ctx, user)
 	if err != nil {
@@ -59,13 +59,13 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		return nil, err
 	}
 
-	return &pb.LoginResponse{
+	return &proto.LoginResponse{
 		Status: http.StatusOK,
 		Token:  jwtToken,
 	}, nil
 }
 
-func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
+func (s *Server) Validate(ctx context.Context, req *proto.ValidateRequest) (*proto.ValidateResponse, error) {
 	token, err := parseToken(req.Token)
 	if err != nil || !token.Valid {
 		return nil, err
@@ -79,7 +79,7 @@ func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.Val
 		return nil, errDb
 	}
 
-	return &pb.ValidateResponse{
+	return &proto.ValidateResponse{
 		Status: http.StatusOK,
 		UserId: user.Id,
 	}, nil
