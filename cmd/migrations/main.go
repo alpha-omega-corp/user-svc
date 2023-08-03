@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/alpha-omega-corp/authentication-svc/config"
 	"github.com/alpha-omega-corp/authentication-svc/pkg/models"
+	"github.com/alpha-omega-corp/services/config"
 	"github.com/alpha-omega-corp/services/database"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/migrate"
@@ -12,12 +12,9 @@ import (
 )
 
 func main() {
-	c, err := config.Config("dev")
-	if err != nil {
-		log.Fatalln("Failed at config", err)
-	}
-
+	c := config.Get("dev")
 	db := database.NewHandler(c.DB).Database()
+
 	defer func(database *bun.DB) {
 		err := database.Close()
 		if err != nil {
