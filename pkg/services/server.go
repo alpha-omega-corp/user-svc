@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 	"fmt"
-	"github.com/alpha-omega-corp/authentication-svc/pkg/models"
-	"github.com/alpha-omega-corp/authentication-svc/proto"
+	"github.com/alpha-omega-corp/auth-svc/pkg/models"
+	"github.com/alpha-omega-corp/auth-svc/proto"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/uptrace/bun"
 	"golang.org/x/crypto/bcrypt"

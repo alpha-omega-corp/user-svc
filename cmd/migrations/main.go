@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/alpha-omega-corp/authentication-svc/pkg/config"
-	"github.com/alpha-omega-corp/authentication-svc/pkg/models"
+	"github.com/alpha-omega-corp/auth-svc/pkg/config"
+	"github.com/alpha-omega-corp/auth-svc/pkg/models"
+	"github.com/alpha-omega-corp/services/database"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/migrate"
 	"github.com/urfave/cli/v2"
@@ -12,20 +13,20 @@ import (
 
 func main() {
 	c, _ := config.LoadConfig()
-	db := config.NewConnection(c.DSN).Database()
+	dbHandler := database.NewHandler(c.DSN)
 
 	defer func(db *bun.DB) {
 		err := db.Close()
 		if err != nil {
 			log.Fatal(err)
 		}
-	}(db)
+	}(dbHandler.Database())
 
 	appCli := &cli.App{
 		Name:  "authentication-svc",
 		Usage: "bootstrap the service",
 		Commands: []*cli.Command{
-			migrateCommand(db),
+			migrateCommand(dbHandler.Database()),
 		},
 	}
 
