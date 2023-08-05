@@ -5,6 +5,7 @@ import "github.com/spf13/viper"
 type Config struct {
 	HOST string `mapstruct:"host"`
 	DSN  string `mapstruct:"dsn"`
+	KEY  string `mapstruct:"key"`
 }
 
 func LoadConfig() (config Config, err error) {

@@ -4,7 +4,9 @@ go 1.20
 
 require (
 	github.com/alpha-omega-corp/services v0.0.0-20230805111941-84cbc296d601
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-jwt/jwt/v5 v5.0.0
+	github.com/hellokvn/go-grpc-auth-svc v0.0.0-20220329201106-de9b08c8e812
 	github.com/spf13/viper v1.16.0
 	github.com/uptrace/bun v1.1.14
 	github.com/urfave/cli/v2 v2.25.7
