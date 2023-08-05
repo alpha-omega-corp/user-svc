@@ -4,6 +4,7 @@ import (
 	"github.com/alpha-omega-corp/authentication-svc/pkg/config"
 	"github.com/alpha-omega-corp/authentication-svc/pkg/services"
 	"github.com/alpha-omega-corp/authentication-svc/proto"
+	"github.com/alpha-omega-corp/services/database"
 	"github.com/alpha-omega-corp/services/server"
 	"github.com/uptrace/bun"
 	"google.golang.org/grpc"
@@ -15,9 +16,9 @@ func main() {
 		panic(err)
 	}
 
-	h := config.NewConnection(c.DSN)
+	dbHandler := database.NewHandler(c.DSN)
 
-	if err := server.NewGRPC(c.HOST, h.Database(), func(db *bun.DB, grpc *grpc.Server) {
+	if err := server.NewGRPC(c.HOST, dbHandler, func(db *bun.DB, grpc *grpc.Server) {
 		s := services.NewServer(db)
 		proto.RegisterAuthServiceServer(grpc, s)
 	}); err != nil {
