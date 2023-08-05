@@ -1,23 +1,26 @@
 package main
 
 import (
-	"github.com/alpha-omega-corp/authentication-svc/pkg/proto"
+	"github.com/alpha-omega-corp/authentication-svc/pkg/config"
 	"github.com/alpha-omega-corp/authentication-svc/pkg/services"
-	"github.com/alpha-omega-corp/services/config"
-	"github.com/alpha-omega-corp/services/database"
+	"github.com/alpha-omega-corp/authentication-svc/proto"
 	"github.com/alpha-omega-corp/services/server"
+	"github.com/uptrace/bun"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	c := config.Get("dev")
-
-	err := server.NewGRPC(c.AUTH, c, func(h *database.Handler, grpc *grpc.Server) {
-		s := services.NewServer(h.Database())
-		proto.RegisterAuthServiceServer(grpc, s)
-	})
-
+	c, err := config.LoadConfig()
 	if err != nil {
+		panic(err)
+	}
+
+	h := config.NewConnection(c.DSN)
+
+	if err := server.NewGRPC(c.HOST, h.Database(), func(db *bun.DB, grpc *grpc.Server) {
+		s := services.NewServer(db)
+		proto.RegisterAuthServiceServer(grpc, s)
+	}); err != nil {
 		panic(err)
 	}
 }
