@@ -60,6 +60,10 @@ func (s *Server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.Log
 	return &proto.LoginResponse{
 		Status: http.StatusOK,
 		Token:  token,
+		User: &proto.User{
+			Id:    user.Id,
+			Email: user.Email,
+		},
 	}, nil
 }
 

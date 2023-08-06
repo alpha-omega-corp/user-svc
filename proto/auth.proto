@@ -40,6 +40,7 @@ message LoginResponse {
   int64 status = 1;
   string error = 2;
   string token = 3;
+  User user = 4;
 }
 
 // Validate
