@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.15.8
-// source: pkg/proto/jwt.proto
+// source: proto/auth.proto
 
 package proto
 
@@ -173,5 +173,5 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pkg/proto/jwt.proto",
+	Metadata: "proto/auth.proto",
 }

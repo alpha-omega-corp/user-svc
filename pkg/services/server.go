@@ -68,7 +68,7 @@ func (s *Server) Validate(ctx context.Context, req *proto.ValidateRequest) (*pro
 
 	if err != nil {
 		return &proto.ValidateResponse{
-			Status: http.StatusBadRequest,
+			Status: http.StatusForbidden,
 			Error:  err.Error(),
 		}, nil
 	}
@@ -77,7 +77,7 @@ func (s *Server) Validate(ctx context.Context, req *proto.ValidateRequest) (*pro
 	err = s.db.NewSelect().Model(&user).Where("email = ?", claims.Email).Scan(ctx, &user)
 	if err != nil {
 		return &proto.ValidateResponse{
-			Status: http.StatusNotFound,
+			Status: http.StatusForbidden,
 			Error:  "User not found",
 		}, nil
 	}
