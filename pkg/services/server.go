@@ -84,6 +84,9 @@ func (s *Server) Validate(ctx context.Context, req *proto.ValidateRequest) (*pro
 
 	return &proto.ValidateResponse{
 		Status: http.StatusOK,
-		UserId: user.Id,
+		User: &proto.User{
+			Id:    user.Id,
+			Email: user.Email,
+		},
 	}, nil
 }

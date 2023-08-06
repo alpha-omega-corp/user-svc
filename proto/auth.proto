@@ -10,6 +10,13 @@ service AuthService {
   rpc Validate(ValidateRequest) returns (ValidateResponse) {}
 }
 
+// User
+
+message User {
+  int64 id = 1;
+  string email = 2;
+}
+
 // Register
 
 message RegisterRequest {
@@ -42,5 +49,5 @@ message ValidateRequest { string token = 1; }
 message ValidateResponse {
   int64 status = 1;
   string error = 2;
-  int64 userId = 3;
+  User user = 3;
 }
