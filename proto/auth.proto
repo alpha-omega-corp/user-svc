@@ -10,6 +10,17 @@ service AuthService {
   rpc Validate(ValidateRequest) returns (ValidateResponse) {}
 
   rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
+  rpc GetRoles(GetRolesRequest) returns (GetRolesResponse) {}
+}
+
+message GetRolesRequest {}
+message GetRolesResponse {
+  repeated Role roles = 3;
+}
+
+message Role {
+  int64 id = 1;
+  string name = 2;
 }
 
 message CreateRoleRequest {

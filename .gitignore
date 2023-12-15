@@ -1,2 +1,2 @@
 .idea
-pkg/config/envs/dev.yaml
+./pkg/config/envs/dev.yaml
