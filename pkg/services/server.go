@@ -58,6 +58,27 @@ func (s *Server) GetRoles(ctx context.Context, req *proto.GetRolesRequest) (*pro
 	}, nil
 }
 
+func (s *Server) GetUsers(ctx context.Context, req *proto.GetUsersRequest) (*proto.GetUsersResponse, error) {
+	var users []*models.User
+
+	err := s.db.NewSelect().Model(&users).Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var resSlice []*proto.User
+	for _, user := range users {
+		resSlice = append(resSlice, &proto.User{
+			Id:    user.Id,
+			Email: user.Email,
+		})
+	}
+
+	return &proto.GetUsersResponse{
+		Users: resSlice,
+	}, nil
+}
+
 func (s *Server) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
 	user := new(models.User)
 

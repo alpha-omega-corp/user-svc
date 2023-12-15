@@ -11,6 +11,12 @@ service AuthService {
 
   rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
   rpc GetRoles(GetRolesRequest) returns (GetRolesResponse) {}
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
+}
+
+message GetUsersRequest {}
+message GetUsersResponse {
+  repeated User users = 3;
 }
 
 message GetRolesRequest {}
