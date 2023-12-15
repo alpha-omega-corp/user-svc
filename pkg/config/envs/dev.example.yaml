@@ -2,3 +2,5 @@ host: localhost:50051
 dsn: postgres://root:root@localhost:5432/auth_svc
 key: jwt-secret
 
+
+

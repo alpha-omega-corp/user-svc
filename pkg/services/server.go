@@ -23,6 +23,21 @@ func NewServer(db *bun.DB, authWrapper *utils.AuthWrapper) *Server {
 	}
 }
 
+func (s *Server) CreateRole(ctx context.Context, req *proto.CreateRoleRequest) (*proto.CreateRoleResponse, error) {
+	role := new(models.Role)
+	role.Name = req.Name
+
+	_, err := s.db.NewInsert().Model(role).Exec(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.CreateRoleResponse{
+		Status: http.StatusCreated,
+	}, nil
+}
+
 func (s *Server) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
 	user := new(models.User)
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/alpha-omega-corp/auth-svc/pkg/config"
+	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/services"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -18,6 +19,7 @@ func main() {
 	}
 
 	dbHandler := database.NewHandler(c.DSN)
+	dbHandler.Database().RegisterModel((*models.UserToRole)(nil))
 
 	if err := server.NewGRPC(c.HOST, dbHandler, func(db *bun.DB, grpc *grpc.Server) {
 		s := services.NewServer(db, utils.NewAuthWrapper(c.KEY))

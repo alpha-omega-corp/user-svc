@@ -52,7 +52,11 @@ func migrateCommand(db *bun.DB) *cli.Command {
 				Name:  "reset",
 				Usage: "migrate database",
 				Action: func(c *cli.Context) error {
-					return db.ResetModel(c.Context, (*models.User)(nil))
+					return db.ResetModel(c.Context,
+						(*models.User)(nil),
+						(*models.Role)(nil),
+						(*models.UserToRole)(nil),
+					)
 				},
 			},
 		},
