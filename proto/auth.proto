@@ -11,7 +11,18 @@ service AuthService {
 
   rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
   rpc GetRoles(GetRolesRequest) returns (GetRolesResponse) {}
+  rpc AssignRole(AssignRoleRequest) returns (AssignRoleResponse) {}
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
+}
+
+message AssignRoleRequest {
+  int64 userId = 1;
+  int64 roleId = 2;
+}
+
+message AssignRoleResponse {
+  int64 status = 1;
+  string error = 2;
 }
 
 message GetUsersRequest {}

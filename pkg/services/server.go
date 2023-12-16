@@ -49,6 +49,7 @@ func (s *Server) GetRoles(ctx context.Context, req *proto.GetRolesRequest) (*pro
 	var resSlice []*proto.Role
 	for _, role := range roles {
 		resSlice = append(resSlice, &proto.Role{
+			Id:   role.Id,
 			Name: role.Name,
 		})
 	}
@@ -76,6 +77,21 @@ func (s *Server) GetUsers(ctx context.Context, req *proto.GetUsersRequest) (*pro
 
 	return &proto.GetUsersResponse{
 		Users: resSlice,
+	}, nil
+}
+
+func (s *Server) AssignRole(ctx context.Context, req *proto.AssignRoleRequest) (*proto.AssignRoleResponse, error) {
+	_, err := s.db.NewInsert().Model(&models.UserToRole{
+		UserID: req.UserId,
+		RoleID: req.RoleId,
+	}).Exec(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.AssignRoleResponse{
+		Status: http.StatusCreated,
 	}, nil
 }
 
