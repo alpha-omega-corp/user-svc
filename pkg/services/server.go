@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -123,14 +122,21 @@ func (s *Server) UpdateUser(ctx context.Context, req *proto.UpdateUserRequest) (
 }
 
 func (s *Server) GetPermServices(ctx context.Context, req *proto.GetPermServicesRequest) (*proto.GetPermServicesResponse, error) {
-	services := new([]*models.Service)
-	if err := s.db.NewSelect().Model(services).Scan(ctx); err != nil {
+	var services []models.Service
+	if err := s.db.NewSelect().Model(&services).Scan(ctx); err != nil {
 		return nil, err
 	}
 
-	fmt.Print(services)
+	var resSlice []*proto.Service
+	for _, service := range services {
+		resSlice = append(resSlice, &proto.Service{
+			Name: service.Name,
+		})
+	}
 
-	return &proto.GetPermServicesResponse{}, nil
+	return &proto.GetPermServicesResponse{
+		Services: resSlice,
+	}, nil
 }
 
 func (s *Server) AssignRole(ctx context.Context, req *proto.AssignRoleRequest) (*proto.AssignRoleResponse, error) {

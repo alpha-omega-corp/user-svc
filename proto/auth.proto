@@ -24,10 +24,13 @@ enum ServicesEnum {
   DOCKER = 2;
   USER = 3;
 }
+message Service {
+  string name = 1;
+}
 
 message GetPermServicesRequest {}
 message GetPermServicesResponse {
-  ServicesEnum services = 1;
+  repeated Service services = 1;
 }
 
 message CreatePermissionRequest {
