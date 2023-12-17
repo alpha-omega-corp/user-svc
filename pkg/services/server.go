@@ -101,6 +101,21 @@ func (s *Server) GetUsers(ctx context.Context, req *proto.GetUsersRequest) (*pro
 	}, nil
 }
 
+func (s *Server) UpdateUser(ctx context.Context, req *proto.UpdateUserRequest) (*proto.UpdateUserResponse, error) {
+	user := new(models.User)
+	user.Name = req.Name
+
+	_, err := s.db.NewUpdate().Model(user).Where("id = ?", req.Id).Exec(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.UpdateUserResponse{
+		Status: http.StatusOK,
+	}, nil
+}
+
 func (s *Server) AssignRole(ctx context.Context, req *proto.AssignRoleRequest) (*proto.AssignRoleResponse, error) {
 	_, err := s.db.NewInsert().Model(&models.UserToRole{
 		UserID: req.UserId,

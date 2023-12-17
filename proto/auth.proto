@@ -13,6 +13,18 @@ service AuthService {
   rpc GetRoles(GetRolesRequest) returns (GetRolesResponse) {}
   rpc AssignRole(AssignRoleRequest) returns (AssignRoleResponse) {}
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {}
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+}
+
+message UpdateUserRequest {
+  int64 id = 1;
+  string name = 2;
+  repeated int64 roles = 3;
+}
+
+message UpdateUserResponse {
+  int64 status = 1;
+  string error = 2;
 }
 
 message AssignRoleRequest {
