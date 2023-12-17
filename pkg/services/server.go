@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -95,17 +96,41 @@ func (s *Server) GetUsers(ctx context.Context, req *proto.GetUsersRequest) (*pro
 
 func (s *Server) UpdateUser(ctx context.Context, req *proto.UpdateUserRequest) (*proto.UpdateUserResponse, error) {
 	user := new(models.User)
+	if err := s.db.NewSelect().Model(user).Where("id = ?", req.Id).Scan(ctx); err != nil {
+		return nil, err
+	}
+
 	user.Name = req.Name
-
 	_, err := s.db.NewUpdate().Model(user).Where("id = ?", req.Id).Exec(ctx)
-
 	if err != nil {
 		return nil, err
+	}
+
+	for _, roleId := range req.Roles {
+		_, err := s.db.NewDelete().Model(&models.UserToRole{}).
+			Where("user_id = ?", req.Id).
+			Where("role_id = ?", roleId).
+			Exec(ctx)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &proto.UpdateUserResponse{
 		Status: http.StatusOK,
 	}, nil
+}
+
+func (s *Server) GetPermServices(ctx context.Context, req *proto.GetPermServicesRequest) (*proto.GetPermServicesResponse, error) {
+	services := new([]*models.Service)
+	if err := s.db.NewSelect().Model(services).Scan(ctx); err != nil {
+		return nil, err
+	}
+
+	fmt.Print(services)
+
+	return &proto.GetPermServicesResponse{}, nil
 }
 
 func (s *Server) AssignRole(ctx context.Context, req *proto.AssignRoleRequest) (*proto.AssignRoleResponse, error) {
