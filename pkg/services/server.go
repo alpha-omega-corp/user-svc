@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -79,18 +78,11 @@ func (s *Server) GetUsers(ctx context.Context, req *proto.GetUsersRequest) (*pro
 			}
 		}
 
-		b, err := json.Marshal(rolesSlice)
-		if err != nil {
-			return nil, err
-		}
-
 		protoUser := &proto.User{
 			Id:    user.Id,
+			Name:  user.Name,
 			Email: user.Email,
-		}
-
-		if err := json.Unmarshal(b, &protoUser.Roles); err != nil {
-			return nil, err
+			Roles: rolesSlice,
 		}
 
 		resSlice = append(resSlice, protoUser)

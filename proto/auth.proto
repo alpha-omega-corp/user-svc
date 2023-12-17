@@ -61,7 +61,8 @@ message CreateRoleResponse {
 message User {
   int64 id = 1;
   string email = 2;
-  repeated Role roles = 3;
+  string name = 3;
+  repeated Role roles = 4;
 }
 
 message RegisterRequest {
