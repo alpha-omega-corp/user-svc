@@ -16,7 +16,7 @@ service AuthService {
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
 
   rpc GetPermServices(GetPermServicesRequest) returns (GetPermServicesResponse) {}
-  rpc CreatePermission(CreatePermissionRequest) returns (CreatePermissionResponse) {}
+  rpc CreatePermissions(CreatePermissionRequest) returns (CreatePermissionResponse) {}
 }
 
 message CreatePermissionResponse {
