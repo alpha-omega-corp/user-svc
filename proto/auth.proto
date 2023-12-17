@@ -16,6 +16,20 @@ service AuthService {
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
 
   rpc GetPermServices(GetPermServicesRequest) returns (GetPermServicesResponse) {}
+  rpc CreatePermission(CreatePermissionRequest) returns (CreatePermissionResponse) {}
+}
+
+message CreatePermissionResponse {
+  int64 status = 1;
+  string error = 2;
+}
+
+message CreatePermissionRequest {
+  string service = 1;
+  int64 roleId = 2;
+  bool canRead = 3;
+  bool canWrite = 4;
+  bool canManage = 5;
 }
 
 enum ServicesEnum {
@@ -31,10 +45,6 @@ message Service {
 message GetPermServicesRequest {}
 message GetPermServicesResponse {
   repeated Service services = 1;
-}
-
-message CreatePermissionRequest {
-  string name = 1;
 }
 
 message UpdateUserRequest {

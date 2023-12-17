@@ -139,6 +139,37 @@ func (s *Server) GetPermServices(ctx context.Context, req *proto.GetPermServices
 	}, nil
 }
 
+func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermissionRequest) (*proto.CreatePermissionResponse, error) {
+	service := new(models.Service)
+	if err := s.db.NewSelect().Model(service).Where("name = ?", req.Service).Scan(ctx); err != nil {
+		return nil, err
+	}
+
+	var permissions *models.Permission
+	permissions = &models.Permission{
+		Read:   req.CanRead,
+		Write:  req.CanWrite,
+		Manage: req.CanManage,
+
+		ServiceID: service.Id,
+	}
+	_, err := s.db.NewInsert().Model(&permissions).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.db.NewInsert().Model(&models.RoleToPermission{
+		RoleID:       req.RoleId,
+		PermissionID: permissions.Id,
+	}).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.CreatePermissionResponse{
+		Status: http.StatusCreated,
+	}, nil
+}
+
 func (s *Server) AssignRole(ctx context.Context, req *proto.AssignRoleRequest) (*proto.AssignRoleResponse, error) {
 	_, err := s.db.NewInsert().Model(&models.UserToRole{
 		UserID: req.UserId,
