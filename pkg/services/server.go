@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -62,17 +63,37 @@ func (s *Server) GetRoles(ctx context.Context, req *proto.GetRolesRequest) (*pro
 func (s *Server) GetUsers(ctx context.Context, req *proto.GetUsersRequest) (*proto.GetUsersResponse, error) {
 	var users []*models.User
 
-	err := s.db.NewSelect().Model(&users).Scan(ctx)
+	err := s.db.NewSelect().Model(&users).Relation("Roles").Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var resSlice []*proto.User
 	for _, user := range users {
-		resSlice = append(resSlice, &proto.User{
+		rolesSlice := make([]*proto.Role, len(user.Roles))
+
+		for index, role := range user.Roles {
+			rolesSlice[index] = &proto.Role{
+				Id:   role.Id,
+				Name: role.Name,
+			}
+		}
+
+		b, err := json.Marshal(rolesSlice)
+		if err != nil {
+			return nil, err
+		}
+
+		protoUser := &proto.User{
 			Id:    user.Id,
 			Email: user.Email,
-		})
+		}
+
+		if err := json.Unmarshal(b, &protoUser.Roles); err != nil {
+			return nil, err
+		}
+
+		resSlice = append(resSlice, protoUser)
 	}
 
 	return &proto.GetUsersResponse{

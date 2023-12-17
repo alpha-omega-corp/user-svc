@@ -36,6 +36,8 @@ func main() {
 }
 
 func migrateCommand(db *bun.DB) *cli.Command {
+	db.RegisterModel((*models.UserToRole)(nil))
+
 	return &cli.Command{
 		Name:  "db",
 		Usage: "manage database migrations",

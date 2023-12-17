@@ -10,6 +10,7 @@ type User struct {
 	Id       int64  `json:"id" bun:"id,pk,autoincrement"`
 	Email    string `json:"email" bun:"email,unique"`
 	Password string `json:"-" bun:"encrypted_password"`
+	Roles    []Role `bun:"m2m:user_to_roles,join:User=Role"`
 }
 
 type UserToRole struct {
