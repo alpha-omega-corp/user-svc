@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -145,15 +146,14 @@ func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermiss
 		return nil, err
 	}
 
-	var permissions *models.Permission
-	permissions = &models.Permission{
+	permissions := &models.Permission{
 		Read:   req.CanRead,
 		Write:  req.CanWrite,
 		Manage: req.CanManage,
 
 		ServiceID: service.Id,
 	}
-	_, err := s.db.NewInsert().Model(&permissions).Exec(ctx)
+	_, err := s.db.NewInsert().Model(permissions).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +167,25 @@ func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermiss
 	}
 	return &proto.CreatePermissionResponse{
 		Status: http.StatusCreated,
+	}, nil
+}
+
+func (s *Server) GetPermissions(ctx context.Context, req *proto.GetPermissionsRequest) (*proto.GetPermissionsResponse, error) {
+	var services []*models.Service
+	if err := s.db.NewSelect().
+		Model(&services).
+		Where("id = ?", req.ServiceId).
+		Relation("Permissions").
+		Scan(ctx); err != nil {
+		return nil, err
+	}
+
+	fmt.Print(services)
+
+	var resSlice []*proto.Permission
+
+	return &proto.GetPermissionsResponse{
+		Permissions: resSlice,
 	}, nil
 }
 

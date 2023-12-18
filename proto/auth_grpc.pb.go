@@ -32,6 +32,7 @@ type AuthServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	GetPermServices(ctx context.Context, in *GetPermServicesRequest, opts ...grpc.CallOption) (*GetPermServicesResponse, error)
 	CreatePermissions(ctx context.Context, in *CreatePermissionRequest, opts ...grpc.CallOption) (*CreatePermissionResponse, error)
+	GetPermissions(ctx context.Context, in *GetPermissionsRequest, opts ...grpc.CallOption) (*GetPermissionsResponse, error)
 }
 
 type authServiceClient struct {
@@ -132,6 +133,15 @@ func (c *authServiceClient) CreatePermissions(ctx context.Context, in *CreatePer
 	return out, nil
 }
 
+func (c *authServiceClient) GetPermissions(ctx context.Context, in *GetPermissionsRequest, opts ...grpc.CallOption) (*GetPermissionsResponse, error) {
+	out := new(GetPermissionsResponse)
+	err := c.cc.Invoke(ctx, "/auth.AuthService/GetPermissions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type AuthServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	GetPermServices(context.Context, *GetPermServicesRequest) (*GetPermServicesResponse, error)
 	CreatePermissions(context.Context, *CreatePermissionRequest) (*CreatePermissionResponse, error)
+	GetPermissions(context.Context, *GetPermissionsRequest) (*GetPermissionsResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedAuthServiceServer) GetPermServices(context.Context, *GetPermS
 }
 func (UnimplementedAuthServiceServer) CreatePermissions(context.Context, *CreatePermissionRequest) (*CreatePermissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePermissions not implemented")
+}
+func (UnimplementedAuthServiceServer) GetPermissions(context.Context, *GetPermissionsRequest) (*GetPermissionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPermissions not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -376,6 +390,24 @@ func _AuthService_CreatePermissions_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetPermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.AuthService/GetPermissions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetPermissions(ctx, req.(*GetPermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePermissions",
 			Handler:    _AuthService_CreatePermissions_Handler,
+		},
+		{
+			MethodName: "GetPermissions",
+			Handler:    _AuthService_GetPermissions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
