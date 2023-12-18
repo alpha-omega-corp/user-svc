@@ -131,6 +131,7 @@ func (s *Server) GetPermServices(ctx context.Context, req *proto.GetPermServices
 	var resSlice []*proto.Service
 	for _, service := range services {
 		resSlice = append(resSlice, &proto.Service{
+			Id:   service.Id,
 			Name: service.Name,
 		})
 	}
