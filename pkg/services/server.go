@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -147,17 +146,10 @@ func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermiss
 		Write:     req.CanWrite,
 		Manage:    req.CanManage,
 		ServiceID: req.ServiceId,
+		RoleId:    req.RoleId,
 	}
 
 	_, err := s.db.NewInsert().Model(permissions).Exec(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = s.db.NewInsert().Model(&models.RoleToPermission{
-		RoleID:       req.RoleId,
-		PermissionID: permissions.Id,
-	}).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -168,18 +160,40 @@ func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermiss
 }
 
 func (s *Server) GetPermissions(ctx context.Context, req *proto.GetPermissionsRequest) (*proto.GetPermissionsResponse, error) {
-	var services []*models.Service
+	var service models.Service
 	if err := s.db.NewSelect().
-		Model(&services).
-		Where("id = ?", req.ServiceId).
+		Model(&service).
 		Relation("Permissions").
+		Where("id = ?", req.ServiceId).
 		Scan(ctx); err != nil {
 		return nil, err
 	}
 
-	fmt.Print(services)
-
 	var resSlice []*proto.Permission
+	for index, permission := range service.Permissions {
+		role := new(models.Role)
+		if err := s.db.NewSelect().
+			Model(role).
+			Where("id  = ?", permission.RoleId).
+			Scan(ctx); err != nil {
+			return nil, err
+		}
+
+		resSlice[index] = &proto.Permission{
+			Id: permission.Id,
+			Service: &proto.Service{
+				Id:   service.Id,
+				Name: service.Name,
+			},
+			Role: &proto.Role{
+				Id:   role.Id,
+				Name: role.Name,
+			},
+			CanRead:   permission.Read,
+			CanWrite:  permission.Write,
+			CanManage: permission.Manage,
+		}
+	}
 
 	return &proto.GetPermissionsResponse{
 		Permissions: resSlice,

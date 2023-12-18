@@ -39,7 +39,6 @@ func main() {
 func migrateCommand(db *bun.DB) *cli.Command {
 	db.RegisterModel(
 		(*models.UserToRole)(nil),
-		(*models.RoleToPermission)(nil),
 	)
 
 	return &cli.Command{
@@ -63,7 +62,6 @@ func migrateCommand(db *bun.DB) *cli.Command {
 						(*models.Role)(nil),
 						(*models.UserToRole)(nil),
 						(*models.Permission)(nil),
-						(*models.RoleToPermission)(nil),
 						(*models.Service)(nil),
 					); err != nil {
 						return err

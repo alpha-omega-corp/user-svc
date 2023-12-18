@@ -30,10 +30,11 @@ message GetPermissionsResponse {
 
 message Permission {
   int64 id = 1;
-  string service = 2;
-  bool canRead = 3;
-  bool canWrite = 4;
-  bool canManage = 5;
+  Role role = 2;
+  Service service = 3;
+  bool canRead = 4;
+  bool canWrite = 5;
+  bool canManage = 6;
 }
 
 message CreatePermissionResponse {
