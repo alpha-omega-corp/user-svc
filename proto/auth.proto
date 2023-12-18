@@ -42,8 +42,8 @@ message CreatePermissionResponse {
 }
 
 message CreatePermissionRequest {
-  string service = 1;
-  int64 roleId = 2;
+  int64 roleId = 1;
+  int64 serviceId = 2;
   bool canRead = 3;
   bool canWrite = 4;
   bool canManage = 5;

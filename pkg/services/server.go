@@ -142,18 +142,13 @@ func (s *Server) GetPermServices(ctx context.Context, req *proto.GetPermServices
 }
 
 func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermissionRequest) (*proto.CreatePermissionResponse, error) {
-	service := new(models.Service)
-	if err := s.db.NewSelect().Model(service).Where("name = ?", req.Service).Scan(ctx); err != nil {
-		return nil, err
-	}
-
 	permissions := &models.Permission{
-		Read:   req.CanRead,
-		Write:  req.CanWrite,
-		Manage: req.CanManage,
-
-		ServiceID: service.Id,
+		Read:      req.CanRead,
+		Write:     req.CanWrite,
+		Manage:    req.CanManage,
+		ServiceID: req.ServiceId,
 	}
+
 	_, err := s.db.NewInsert().Model(permissions).Exec(ctx)
 	if err != nil {
 		return nil, err
@@ -166,6 +161,7 @@ func (s *Server) CreatePermissions(ctx context.Context, req *proto.CreatePermiss
 	if err != nil {
 		return nil, err
 	}
+
 	return &proto.CreatePermissionResponse{
 		Status: http.StatusCreated,
 	}, nil
