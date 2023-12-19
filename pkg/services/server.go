@@ -8,6 +8,7 @@ import (
 	"github.com/alpha-omega-corp/auth-svc/proto"
 	"github.com/uptrace/bun"
 	"net/http"
+	"strings"
 )
 
 type Server struct {
@@ -203,16 +204,61 @@ func (s *Server) GetPermissions(ctx context.Context, req *proto.GetPermissionsRe
 
 func (s *Server) GetUserPermissions(ctx context.Context, req *proto.GetUserPermissionsRequest) (*proto.GetUserPermissionsResponse, error) {
 	user := new(models.User)
-	if err := s.db.NewSelect().Model(user).Where("id = ?", req.UserId).Scan(ctx); err != nil {
+	if err := s.db.NewSelect().
+		Model(user).
+		Relation("Roles").
+		Where("id = ?", req.UserId).
+		Scan(ctx); err != nil {
 		return nil, err
 	}
 
+	var permSlice []models.Permission
 	for _, role := range user.Roles {
-		fmt.Print(role)
+		if err := s.db.NewSelect().
+			Model(&role).
+			Relation("Permissions").
+			Where("id = ?", role.Id).
+			Scan(ctx); err != nil {
+			return nil, err
+		}
+
+		permSlice = append(permSlice, role.Permissions...)
+	}
+
+	permMap := make(map[string]bool)
+	for index, perm := range permSlice {
+		service := new(models.Service)
+		if err := s.db.NewSelect().
+			Model(service).
+			Where("id = ?", perm.ServiceID).
+			Scan(ctx); err != nil {
+			return nil, err
+		}
+
+		svc := strings.ToLower(service.Name)
+		idxRead := fmt.Sprintf("%s.read", svc)
+		idxWrite := fmt.Sprintf("%s.write", svc)
+		idxManage := fmt.Sprintf("%s.manage", svc)
+
+		if index > 0 {
+			if permMap[idxRead] != true {
+				permMap[idxRead] = perm.Read
+			}
+			if permMap[idxWrite] != true {
+				permMap[idxWrite] = perm.Write
+			}
+			if permMap[idxManage] != true {
+				permMap[idxManage] = perm.Manage
+			}
+		} else {
+			permMap[idxRead] = perm.Read
+			permMap[idxWrite] = perm.Write
+			permMap[idxManage] = perm.Manage
+		}
 	}
 
 	return &proto.GetUserPermissionsResponse{
-		Status: http.StatusOK,
+		Matrix: permMap,
 	}, nil
 }
 

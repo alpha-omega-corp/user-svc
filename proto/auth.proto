@@ -26,7 +26,7 @@ message GetUserPermissionsRequest {
 }
 
 message GetUserPermissionsResponse {
-  int64 status = 1;
+  map<string, bool> matrix = 1;
 }
 
 
@@ -147,7 +147,7 @@ message LoginResponse {
   User user = 4;
 }
 
-message ValidateRequest { string token = 1; }
+message ValidateRequest {string token = 1;}
 
 message ValidateResponse {
   int64 status = 1;
