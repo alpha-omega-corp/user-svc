@@ -18,7 +18,17 @@ service AuthService {
   rpc GetPermServices(GetPermServicesRequest) returns (GetPermServicesResponse) {}
   rpc CreatePermissions(CreatePermissionRequest) returns (CreatePermissionResponse) {}
   rpc GetPermissions(GetPermissionsRequest) returns (GetPermissionsResponse) {}
+  rpc GetUserPermissions(GetUserPermissionsRequest) returns (GetUserPermissionsResponse) {}
 }
+
+message GetUserPermissionsRequest {
+  int64 userId = 1;
+}
+
+message GetUserPermissionsResponse {
+  int64 status = 1;
+}
+
 
 message GetPermissionsRequest {
   int64 serviceId = 1;

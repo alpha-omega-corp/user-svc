@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
 	"github.com/alpha-omega-corp/auth-svc/proto"
@@ -169,7 +170,7 @@ func (s *Server) GetPermissions(ctx context.Context, req *proto.GetPermissionsRe
 		return nil, err
 	}
 
-	var resSlice []*proto.Permission
+	resSlice := make([]*proto.Permission, len(service.Permissions))
 	for index, permission := range service.Permissions {
 		role := new(models.Role)
 		if err := s.db.NewSelect().
@@ -197,6 +198,21 @@ func (s *Server) GetPermissions(ctx context.Context, req *proto.GetPermissionsRe
 
 	return &proto.GetPermissionsResponse{
 		Permissions: resSlice,
+	}, nil
+}
+
+func (s *Server) GetUserPermissions(ctx context.Context, req *proto.GetUserPermissionsRequest) (*proto.GetUserPermissionsResponse, error) {
+	user := new(models.User)
+	if err := s.db.NewSelect().Model(user).Where("id = ?", req.UserId).Scan(ctx); err != nil {
+		return nil, err
+	}
+
+	for _, role := range user.Roles {
+		fmt.Print(role)
+	}
+
+	return &proto.GetUserPermissionsResponse{
+		Status: http.StatusOK,
 	}, nil
 }
 
