@@ -7,6 +7,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/spf13/viper v1.18.1
 	github.com/uptrace/bun v1.1.16
+	github.com/uptrace/bun/dbfixture v1.1.16
 	github.com/urfave/cli/v2 v2.26.0
 	golang.org/x/crypto v0.16.0
 	google.golang.org/grpc v1.60.0

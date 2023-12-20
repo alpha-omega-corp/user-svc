@@ -1,0 +1,153 @@
+# encrypted_password : test
+
+- model: User
+  rows:
+    - _id: SuperUser
+      id: 1
+      name: Nicholas
+      email: bleyo@alphomega.org
+      encrypted_password: $2a$05$erJ7QK4n48FV6XHgl.yn0.NU3cPxEp7CxoYMPOzB22lZGmdtRZPSS
+      created_at: '{{ now }}'
+      updated_at: '{{ now }}'
+
+    - _id: UserModerator
+      id: 2
+      name: Jackie Moderator
+      email: moderator@alphomega.org
+      encrypted_password: $2a$05$erJ7QK4n48FV6XHgl.yn0.NU3cPxEp7CxoYMPOzB22lZGmdtRZPSS
+      created_at: '{{ now }}'
+      updated_at: '{{ now }}'
+
+    - _id: UserPremium
+      id: 3
+      name: Jackie Premium
+      email: premium@alphomega.org
+      encrypted_password: $2a$05$erJ7QK4n48FV6XHgl.yn0.NU3cPxEp7CxoYMPOzB22lZGmdtRZPSS
+      created_at: '{{ now }}'
+      updated_at: '{{ now }}'
+
+    - _id: UserDefault
+      id: 4
+      name: Jackie User
+      email: user@alphomega.org
+      encrypted_password: $2a$05$erJ7QK4n48FV6XHgl.yn0.NU3cPxEp7CxoYMPOzB22lZGmdtRZPSS
+      created_at: '{{ now }}'
+      updated_at: '{{ now }}'
+
+
+- model: Role
+  rows:
+    - _id: Admin
+      id: 1
+      name: admin
+
+    - _id: Moderator
+      id: 2
+      name: moderator
+
+    - _id: Premium
+      id: 3
+      name: premium
+
+    - _id: User
+      id: 4
+      name: user
+
+
+- model: Service
+  rows:
+    - _id: Home
+      id: 1
+      name: home
+
+    - _id: Admin
+      id: 2
+      name: admin
+
+    - _id: Docker
+      id: 3
+      name: docker
+
+    - _id: Packages
+      id: 4
+      name: packages
+
+
+# Assign Roles to Users
+###############################################
+
+
+- model: UserToRole
+  rows:
+    # SuperUser
+    - user_id: '{{ $.User.SuperUser.Id }}'
+      role_id: '{{ $.Role.Admin.Id }}'
+
+    - user_id: '{{ $.User.SuperUser.Id }}'
+      role_id: '{{ $.Role.Moderator.Id }}'
+
+    - user_id: '{{ $.User.SuperUser.Id }}'
+      role_id: '{{ $.Role.User.Id }}'
+
+    # UserModerator
+    - user_id: '{{ $.User.UserModerator.Id }}'
+      role_id: '{{ $.Role.Moderator.Id }}'
+
+    - user_id: '{{ $.User.UserModerator.Id }}'
+      role_id: '{{ $.Role.User.Id }}'
+
+    # UserPremium
+    - user_id: '{{ $.User.UserPremium.Id }}'
+      role_id: '{{ $.Role.Premium.Id }}'
+
+    - user_id: '{{ $.User.UserPremium.Id }}'
+      role_id: '{{ $.Role.User.Id }}'
+
+    # UserDefault
+    - user_id: '{{ $.User.UserDefault.Id }}'
+      role_id: '{{ $.Role.User.Id }}'
+
+
+# Assign Permissions
+###############################################
+
+
+- model: Permission
+  rows:
+    - role_id: '{{ $.Role.Admin.Id }}'
+      service_id: '{{ $.Service.Admin.Id }}'
+      read: true
+      write: true
+      manage: true
+
+    - role_id: '{{ $.Role.Admin.Id }}'
+      service_id: '{{ $.Service.Docker.Id }}'
+      read: true
+      write: true
+      manage: true
+
+    - role_id: '{{ $.Role.Admin.Id }}'
+      service_id: '{{ $.Service.Packages.Id }}'
+      read: true
+      write: true
+      manage: true
+
+    - role_id: '{{ $.Role.Moderator.Id }}'
+      service_id: '{{ $.Service.Docker.Id }}'
+      read: true
+      write: true
+      manage: false
+
+    - role_id: '{{ $.Role.Moderator.Id }}'
+      service_id: '{{ $.Service.Packages.Id }}'
+      read: true
+      write: true
+      manage: false
+
+    - role_id: '{{ $.Role.User.Id }}'
+      service_id: '{{ $.Service.Home.Id }}'
+      read: true
+      write: false
+      manage: false
+
+

@@ -61,10 +61,10 @@ message CreatePermissionRequest {
 }
 
 enum ServicesEnum {
-  USER = 0;
-  PACKAGE = 1;
+  HOME = 0;
+  ADMIN = 1;
   DOCKER = 2;
-  WIKI = 3;
+  PACKAGE = 3;
 }
 message Service {
   int64 id = 1;

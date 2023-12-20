@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/alpha-omega-corp/auth-svc/pkg/config"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
-	"github.com/alpha-omega-corp/auth-svc/proto"
 	"github.com/alpha-omega-corp/services/database"
 	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dbfixture"
 	"github.com/uptrace/bun/migrate"
 	"github.com/urfave/cli/v2"
 	"log"
@@ -61,21 +61,15 @@ func migrateCommand(db *bun.DB) *cli.Command {
 						(*models.User)(nil),
 						(*models.Role)(nil),
 						(*models.UserToRole)(nil),
-						(*models.Permission)(nil),
 						(*models.Service)(nil),
+						(*models.Permission)(nil),
 					); err != nil {
 						return err
 					}
 
-					svcMap := proto.ServicesEnum_value
-					for name := range svcMap {
-						_, err := db.NewInsert().Model(&models.Service{
-							Name: name,
-						}).Exec(c.Context)
-
-						if err != nil {
-							return err
-						}
+					fixture := dbfixture.New(db)
+					if err := fixture.Load(c.Context, os.DirFS("cmd/migrations/fixtures"), "fixture.yml"); err != nil {
+						panic(err)
 					}
 
 					return nil
