@@ -2,20 +2,20 @@
 
 function main() {
   cat <<EOF > /lib/systemd/system/"${2}".service
-    [Unit]
-    Description=authentication service
-    After=network.target
+[Unit]
+Description=authentication service
+After=network.target
 
-    [Service]
-    User=act
-    WorkingDirectory=${1}/${2}
-    ExecStart=/usr/bin/go run cmd/main.go
-    SyslogIdentifier=${2}
-    Restart=always
-    RestartSec=10
+[Service]
+User=act
+WorkingDirectory=${1}/${2}
+ExecStart=/usr/bin/go run cmd/main.go
+SyslogIdentifier=${2}
+Restart=always
+RestartSec=10
 
-    [Install]
-    WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
 
 }
