@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/alpha-omega-corp/auth-svc/pkg/config"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/auth-svc/pkg/services"
@@ -19,7 +18,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Print(utils.HashPassword("test"))
 	dbHandler := database.NewHandler(c.DSN)
 	dbHandler.Database().RegisterModel(
 		(*models.UserToRole)(nil),
