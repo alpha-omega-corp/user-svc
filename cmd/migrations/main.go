@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/alpha-omega-corp/auth-svc/pkg/config"
+	localConfig "github.com/alpha-omega-corp/auth-svc/config"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/services/database"
 	"github.com/uptrace/bun"
@@ -13,8 +13,12 @@ import (
 )
 
 func main() {
-	c, _ := config.LoadConfig()
-	dbHandler := database.NewHandler(c.DSN)
+	hostsConfig, err := localConfig.HostsConfig()
+	if err != nil {
+		panic(err)
+	}
+
+	dbHandler := database.NewHandler(hostsConfig.Auth.Dsn)
 
 	defer func(db *bun.DB) {
 		err := db.Close()

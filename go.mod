@@ -3,9 +3,9 @@ module github.com/alpha-omega-corp/auth-svc
 go 1.21
 
 require (
-	github.com/alpha-omega-corp/services v0.0.0-20231215110614-e302486c3ded
+	github.com/alpha-omega-corp/services v0.0.0-20231228135644-bd6691256be8
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/uptrace/bun v1.1.16
 	github.com/uptrace/bun/dbfixture v1.1.16
 	github.com/urfave/cli/v2 v2.26.0
