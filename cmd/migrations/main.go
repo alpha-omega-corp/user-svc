@@ -1,9 +1,11 @@
 package main
 
 import (
-	localConfig "github.com/alpha-omega-corp/auth-svc/config"
 	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/services/database"
+	"github.com/alpha-omega-corp/services/server"
+	"github.com/spf13/viper"
+	_ "github.com/spf13/viper/remote"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dbfixture"
 	"github.com/uptrace/bun/migrate"
@@ -13,12 +15,15 @@ import (
 )
 
 func main() {
-	hostsConfig, err := localConfig.HostsConfig()
+	v := viper.New()
+	cManager := server.NewConfigManager(v)
+
+	c, err := cManager.HostsConfig()
 	if err != nil {
 		panic(err)
 	}
 
-	dbHandler := database.NewHandler(hostsConfig.Auth.Dsn)
+	dbHandler := database.NewHandler(c.Auth.Dsn)
 
 	defer func(db *bun.DB) {
 		err := db.Close()
