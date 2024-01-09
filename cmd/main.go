@@ -35,7 +35,7 @@ func main() {
 
 	if err := svc.NewGRPC(config.Auth.Host, dbHandler, func(db *bun.DB, grpc *grpc.Server) {
 		s := server.NewServer(db, utils.NewAuthWrapper(authConfig.JwtSecret))
-		proto.RegisterAuthServiceServer(grpc, s)
+		proto.RegisterUserServiceServer(grpc, s)
 	}); err != nil {
 		panic(err)
 	}
