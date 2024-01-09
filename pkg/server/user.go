@@ -12,7 +12,7 @@ import (
 )
 
 type Server struct {
-	proto.UnimplementedAuthServiceServer
+	proto.UnimplementedUserServiceServer
 
 	db          *bun.DB
 	authWrapper *utils.AuthWrapper

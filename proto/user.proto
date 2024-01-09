@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package auth;
 
-option go_package = "./pkg/proto";
+option go_package = "github.com/alpha-omega-corp/user-svc/proto";
 
-service AuthService {
+service UserService {
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc Validate(ValidateRequest) returns (ValidateResponse) {}
