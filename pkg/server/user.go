@@ -1,11 +1,11 @@
-package services
+package server
 
 import (
 	"context"
 	"fmt"
-	"github.com/alpha-omega-corp/auth-svc/pkg/models"
-	"github.com/alpha-omega-corp/auth-svc/pkg/utils"
-	"github.com/alpha-omega-corp/auth-svc/proto"
+	"github.com/alpha-omega-corp/user-svc/pkg/models"
+	"github.com/alpha-omega-corp/user-svc/pkg/utils"
+	"github.com/alpha-omega-corp/user-svc/proto"
 	"github.com/uptrace/bun"
 	"net/http"
 	"strings"

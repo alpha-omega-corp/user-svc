@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"github.com/alpha-omega-corp/auth-svc/pkg/models"
+	"github.com/alpha-omega-corp/user-svc/pkg/models"
 	"github.com/golang-jwt/jwt"
 	"time"
 )

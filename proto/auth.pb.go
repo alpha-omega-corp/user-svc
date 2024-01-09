@@ -579,7 +579,7 @@ type GetPermServicesResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Services []*Service `protobuf:"bytes,1,rep,name=services,proto3" json:"services,omitempty"`
+	Services []*Service `protobuf:"bytes,1,rep,name=server,proto3" json:"server,omitempty"`
 }
 
 func (x *GetPermServicesResponse) Reset() {
@@ -1838,7 +1838,7 @@ var file_proto_auth_proto_depIdxs = []int32{
 	5,  // 1: auth.GetPermissionsResponse.permissions:type_name -> auth.Permission
 	28, // 2: auth.Permission.role:type_name -> auth.Role
 	8,  // 3: auth.Permission.service:type_name -> auth.Service
-	8,  // 4: auth.GetPermServicesResponse.services:type_name -> auth.Service
+	8,  // 4: auth.GetPermServicesResponse.server:type_name -> auth.Service
 	21, // 5: auth.GetUsersResponse.users:type_name -> auth.User
 	28, // 6: auth.GetRolesResponse.roles:type_name -> auth.Role
 	28, // 7: auth.User.roles:type_name -> auth.Role

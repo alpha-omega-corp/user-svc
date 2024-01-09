@@ -1,4 +1,4 @@
-module github.com/alpha-omega-corp/auth-svc
+module github.com/alpha-omega-corp/user-svc
 
 go 1.21
 

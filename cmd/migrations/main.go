@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/alpha-omega-corp/auth-svc/pkg/models"
 	"github.com/alpha-omega-corp/services/database"
 	"github.com/alpha-omega-corp/services/server"
+	"github.com/alpha-omega-corp/user-svc/pkg/models"
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
 	"github.com/uptrace/bun"
