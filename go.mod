@@ -3,7 +3,7 @@ module github.com/alpha-omega-corp/user-svc
 go 1.21
 
 require (
-	github.com/alpha-omega-corp/services v0.0.0-20231228135644-bd6691256be8
+	github.com/alpha-omega-corp/services v0.0.0-20240110111926-6b5fe3d84979
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/spf13/viper v1.18.2
 	github.com/uptrace/bun v1.1.16
@@ -13,6 +13,8 @@ require (
 	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.32.0
 )
+
+replace github.com/alpha-omega-corp/services v0.0.0-20240110111926-6b5fe3d84979 => ../services
 
 require (
 	cloud.google.com/go v0.110.10 // indirect

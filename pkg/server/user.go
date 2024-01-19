@@ -14,14 +14,14 @@ import (
 type Server struct {
 	proto.UnimplementedUserServiceServer
 
-	db          *bun.DB
-	authWrapper *utils.AuthWrapper
+	auth *utils.AuthWrapper
+	db   *bun.DB
 }
 
 func NewServer(db *bun.DB, authWrapper *utils.AuthWrapper) *Server {
 	return &Server{
-		db:          db,
-		authWrapper: authWrapper,
+		auth: authWrapper,
+		db:   db,
 	}
 }
 
@@ -309,7 +309,7 @@ func (s *Server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.Log
 		}, nil
 	}
 
-	token, _ := s.authWrapper.GenerateToken(user)
+	token, _ := s.auth.GenerateToken(user)
 
 	return &proto.LoginResponse{
 		Status: http.StatusOK,
@@ -322,7 +322,7 @@ func (s *Server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.Log
 }
 
 func (s *Server) Validate(ctx context.Context, req *proto.ValidateRequest) (*proto.ValidateResponse, error) {
-	claims, err := s.authWrapper.ValidateToken(req.Token)
+	claims, err := s.auth.ValidateToken(req.Token)
 
 	if err != nil {
 		return &proto.ValidateResponse{

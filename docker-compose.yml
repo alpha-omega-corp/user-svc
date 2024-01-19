@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  auth-svc-db:
+  user-svc-db:
     image: docker.io/bitnami/postgresql:15
     ports:
       - '5432:5432'
@@ -10,7 +10,7 @@ services:
     environment:
       - 'POSTGRESQL_USERNAME=root'
       - 'POSTGRESQL_PASSWORD=root'
-      - 'POSTGRESQL_DATABASE=auth_svc'
+      - 'POSTGRESQL_DATABASE=user_svc'
       - 'POSTGRESQL_PORT_NUMBER=5432'
 
 volumes:

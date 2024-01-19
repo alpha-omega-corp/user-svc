@@ -1,10 +1,9 @@
 package main
 
 import (
+	"github.com/alpha-omega-corp/services/config"
 	"github.com/alpha-omega-corp/services/database"
-	"github.com/alpha-omega-corp/services/server"
 	"github.com/alpha-omega-corp/user-svc/pkg/models"
-	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dbfixture"
@@ -15,15 +14,14 @@ import (
 )
 
 func main() {
-	v := viper.New()
-	cManager := server.NewConfigManager(v)
+	cManager := config.NewHandler()
 
-	c, err := cManager.HostsConfig()
+	cHosts, err := cManager.Manager().Hosts()
 	if err != nil {
 		panic(err)
 	}
 
-	dbHandler := database.NewHandler(c.Auth.Dsn)
+	dbHandler := database.NewHandler(cHosts.User.Dsn)
 
 	defer func(db *bun.DB) {
 		err := db.Close()
@@ -33,7 +31,7 @@ func main() {
 	}(dbHandler.Database())
 
 	appCli := &cli.App{
-		Name:  "authentication-svc",
+		Name:  "user-svc",
 		Usage: "bootstrap the service",
 		Commands: []*cli.Command{
 			migrateCommand(dbHandler.Database()),
