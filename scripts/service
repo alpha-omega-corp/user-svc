@@ -9,7 +9,7 @@ After=network.target
 [Service]
 User=act
 WorkingDirectory=${1}/${2}
-ExecStart=/usr/bin/go run cmd/main.go
+ExecStart=/usr/local/go/bin/go run cmd/main.go
 SyslogIdentifier=${2}
 Restart=always
 RestartSec=10
