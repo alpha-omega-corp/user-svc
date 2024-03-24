@@ -6,7 +6,7 @@
       id: 1
       name: Nicholas
       email: bleyo@alphomega.org
-      encrypted_password: $2a$05$erJ7QK4n48FV6XHgl.yn0.NU3cPxEp7CxoYMPOzB22lZGmdtRZPSS
+      encrypted_password: $w2a$05$erJ7QK4n48FV6XHgl.yn0.NU3cPxEp7CxoYMPOzB22lZGmdtRZPSS
       created_at: '{{ now }}'
       updated_at: '{{ now }}'
 

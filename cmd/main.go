@@ -14,25 +14,20 @@ import (
 )
 
 func main() {
-	cManager := config.NewHandler()
-	cHost, err := cManager.Manager().Hosts()
+	cHandler := config.NewHandler()
+	env, err := cHandler.Environment("user")
 	if err != nil {
 		panic(err)
 	}
 
-	dbHandler := database.NewHandler(cHost.User.Dsn)
+	dbHandler := database.NewHandler(env.Host.Dsn)
 	dbHandler.Database().RegisterModel(
 		(*models.UserToRole)(nil),
 	)
 
-	if err := svc.NewGRPC(cHost.User.Host, dbHandler, func(db *bun.DB, grpc *grpc.Server) {
-		cUser, err := cManager.Manager().UserService()
-		if err != nil {
-			panic(err)
-		}
-
-		userServer := server.NewServer(db, utils.NewAuthWrapper(cUser.JwtSecret))
-		proto.RegisterUserServiceServer(grpc, userServer)
+	if err := svc.NewGRPC(env.Host.Url, dbHandler, func(db *bun.DB, grpc *grpc.Server) {
+		auth := utils.NewAuthWrapper(env.Config.Viper.GetString("secret"))
+		proto.RegisterUserServiceServer(grpc, server.NewServer(db, auth))
 	}); err != nil {
 		panic(err)
 	}

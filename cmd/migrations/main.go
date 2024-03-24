@@ -14,14 +14,14 @@ import (
 )
 
 func main() {
-	cManager := config.NewHandler()
+	cHandler := config.NewHandler()
 
-	cHosts, err := cManager.Manager().Hosts()
+	env, err := cHandler.Environment("user")
 	if err != nil {
 		panic(err)
 	}
 
-	dbHandler := database.NewHandler(cHosts.User.Dsn)
+	dbHandler := database.NewHandler(env.Host.Dsn)
 
 	defer func(db *bun.DB) {
 		err := db.Close()

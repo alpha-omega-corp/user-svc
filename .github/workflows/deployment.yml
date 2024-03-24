@@ -8,9 +8,9 @@ jobs:
       - name: deploy authentication service
         uses: appleboy/ssh-action@v1.0.0
         env:
-          INPUT_NAME: ${{ secrets.APP_AUTH_NAME }}
-          INPUT_REPO: ${{ secrets.APP_AUTH_REPO }}
-          INPUT_PATH: ${{ secrets.SERVICES_PATH }}
+          INPUT_NAME: ${{ secrets.APP_USER_NAME }}
+          INPUT_REPO: ${{ secrets.APP_USER_REPO }}
+          INPUT_PATH: ${{ secrets.ALPHOMEGA_PATH }}
           INPUT_SECRET: ${{ secrets.SSH_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}

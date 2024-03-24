@@ -18,9 +18,9 @@ type Server struct {
 	db   *bun.DB
 }
 
-func NewServer(db *bun.DB, authWrapper *utils.AuthWrapper) *Server {
+func NewServer(db *bun.DB, w *utils.AuthWrapper) *Server {
 	return &Server{
-		auth: authWrapper,
+		auth: w,
 		db:   db,
 	}
 }
