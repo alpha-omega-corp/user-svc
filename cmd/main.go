@@ -4,8 +4,8 @@ import (
 	"github.com/alpha-omega-corp/services/config"
 	"github.com/alpha-omega-corp/services/database"
 	svc "github.com/alpha-omega-corp/services/server"
+	"github.com/alpha-omega-corp/user-svc/pkg"
 	"github.com/alpha-omega-corp/user-svc/pkg/models"
-	"github.com/alpha-omega-corp/user-svc/pkg/server"
 	"github.com/alpha-omega-corp/user-svc/pkg/utils"
 	"github.com/alpha-omega-corp/user-svc/proto"
 	_ "github.com/spf13/viper/remote"
@@ -27,7 +27,7 @@ func main() {
 
 	if err := svc.NewGRPC(env.Host.Url, dbHandler, func(db *bun.DB, grpc *grpc.Server) {
 		auth := utils.NewAuthWrapper(env.Config.Viper.GetString("secret"))
-		proto.RegisterUserServiceServer(grpc, server.NewServer(db, auth))
+		proto.RegisterUserServiceServer(grpc, pkg.NewServer(db, auth))
 	}); err != nil {
 		panic(err)
 	}
