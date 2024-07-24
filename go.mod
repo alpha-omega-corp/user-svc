@@ -1,6 +1,6 @@
 module github.com/alpha-omega-corp/user-svc
 
-go 1.21
+go 1.22
 
 require (
 	github.com/alpha-omega-corp/services v0.0.0-20240324144213-d20902053154
