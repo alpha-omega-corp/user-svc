@@ -52,26 +52,20 @@
 - model: Service
   rows:
     - _id: Home
-      id: 1
       name: home
 
     - _id: User
-      id: 2
       name: user
 
     - _id: Docker
-      id: 3
       name: docker
 
     - _id: Packages
-      id: 4
       name: packages
 
 
 # Assign Roles to Users
 ###############################################
-
-
 - model: UserToRole
   rows:
     # Admin
@@ -86,7 +80,6 @@
 
     - user_id: '{{ $.User.Admin.Id }}'
       role_id: '{{ $.Role.Guest.Id }}'
-
     #####
 
 
@@ -96,7 +89,6 @@
 
     - user_id: '{{ $.User.Moderator.Id }}'
       role_id: '{{ $.Role.Guest.Id }}'
-
     #####
 
 
@@ -106,14 +98,11 @@
 
     - user_id: '{{ $.User.Premium.Id }}'
       role_id: '{{ $.Role.Guest.Id }}'
-
       #####
-
 
     # Guest
     - user_id: '{{ $.User.Guest.Id }}'
       role_id: '{{ $.Role.Guest.Id }}'
-
 
 # Assign Permissions
 ###############################################

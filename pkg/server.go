@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"context"
-	"github.com/alpha-omega-corp/user-svc/pkg/services"
+	"github.com/alpha-omega-corp/user-svc/pkg/handlers"
 	"github.com/alpha-omega-corp/user-svc/pkg/utils"
 	"github.com/alpha-omega-corp/user-svc/proto"
 	"github.com/uptrace/bun"
@@ -11,18 +11,18 @@ import (
 type Server struct {
 	proto.UnimplementedUserServiceServer
 
-	authService services.AuthService
-	permService services.PermService
-	roleService services.RoleService
-	userService services.UserService
+	authService handlers.AuthService
+	permService handlers.PermService
+	roleService handlers.RoleService
+	userService handlers.UserService
 }
 
 func NewServer(db *bun.DB, w *utils.AuthWrapper) *Server {
 	return &Server{
-		authService: services.NewAuthService(w, db),
-		permService: services.NewPermService(db),
-		roleService: services.NewRoleService(db),
-		userService: services.NewUserService(db),
+		authService: handlers.NewAuthService(w, db),
+		permService: handlers.NewPermService(db),
+		roleService: handlers.NewRoleService(db),
+		userService: handlers.NewUserService(db),
 	}
 }
 
@@ -41,20 +41,18 @@ func (s *Server) DeleteUser(ctx context.Context, req *proto.DeleteUserRequest) (
 func (s *Server) AssignUser(ctx context.Context, req *proto.AssignUserRequest) (*proto.AssignUserResponse, error) {
 	return s.userService.Assign(ctx, req)
 }
-
 func (s *Server) GetServices(ctx context.Context, req *proto.GetServicesRequest) (*proto.GetServicesResponse, error) {
 	return s.permService.GetServices(ctx)
 }
-func (s *Server) CreatePermission(ctx context.Context, req *proto.CreatePermissionRequest) (*proto.CreatePermissionResponse, error) {
-	return s.permService.Create(ctx, req)
+func (s *Server) CreateServicePermission(ctx context.Context, req *proto.CreateServicePermissionsRequest) (*proto.CreateServicePermissionsResponse, error) {
+	return s.permService.CreateServicePermissions(ctx, req)
 }
-func (s *Server) GetServicePermissions(ctx context.Context, req *proto.GetPermissionsRequest) (*proto.GetPermissionsResponse, error) {
+func (s *Server) GetServicePermissions(ctx context.Context, req *proto.GetServicePermissionsRequest) (*proto.GetServicePermissionsResponse, error) {
 	return s.permService.GetServicePermissions(ctx, req)
 }
 func (s *Server) GetUserPermissions(ctx context.Context, req *proto.GetUserPermissionsRequest) (*proto.GetUserPermissionsResponse, error) {
 	return s.permService.GetUserPermissions(ctx, req)
 }
-
 func (s *Server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.LoginResponse, error) {
 	return s.authService.Login(ctx, req)
 }
@@ -64,7 +62,6 @@ func (s *Server) Register(ctx context.Context, req *proto.RegisterRequest) (*pro
 func (s *Server) Validate(ctx context.Context, req *proto.ValidateRequest) (*proto.ValidateResponse, error) {
 	return s.authService.Validate(ctx, req)
 }
-
 func (s *Server) GetRoles(ctx context.Context, req *proto.GetRolesRequest) (*proto.GetRolesResponse, error) {
 	return s.roleService.GetAll(ctx)
 }

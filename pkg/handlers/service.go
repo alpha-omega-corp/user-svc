@@ -1,4 +1,4 @@
-package services
+package handlers
 
 import (
 	"context"
@@ -11,10 +11,10 @@ import (
 )
 
 type PermService interface {
-	GetServicePermissions(ctx context.Context, req *proto.GetPermissionsRequest) (*proto.GetPermissionsResponse, error)
-	GetUserPermissions(ctx context.Context, req *proto.GetUserPermissionsRequest) (*proto.GetUserPermissionsResponse, error)
 	GetServices(ctx context.Context) (*proto.GetServicesResponse, error)
-	Create(ctx context.Context, req *proto.CreatePermissionRequest) (*proto.CreatePermissionResponse, error)
+	CreateServicePermissions(ctx context.Context, req *proto.CreateServicePermissionsRequest) (*proto.CreateServicePermissionsResponse, error)
+	GetServicePermissions(ctx context.Context, req *proto.GetServicePermissionsRequest) (*proto.GetServicePermissionsResponse, error)
+	GetUserPermissions(ctx context.Context, req *proto.GetUserPermissionsRequest) (*proto.GetUserPermissionsResponse, error)
 }
 
 type permService struct {
@@ -25,25 +25,6 @@ func NewPermService(db *bun.DB) PermService {
 	return &permService{
 		db: db,
 	}
-}
-
-func (s *permService) Create(ctx context.Context, req *proto.CreatePermissionRequest) (*proto.CreatePermissionResponse, error) {
-	permissions := &models.Permission{
-		Read:      req.CanRead,
-		Write:     req.CanWrite,
-		Manage:    req.CanManage,
-		ServiceID: req.ServiceId,
-		RoleId:    req.RoleId,
-	}
-
-	_, err := s.db.NewInsert().Model(permissions).Exec(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &proto.CreatePermissionResponse{
-		Status: http.StatusCreated,
-	}, nil
 }
 
 func (s *permService) GetServices(ctx context.Context) (*proto.GetServicesResponse, error) {
@@ -65,7 +46,26 @@ func (s *permService) GetServices(ctx context.Context) (*proto.GetServicesRespon
 	}, nil
 }
 
-func (s *permService) GetServicePermissions(ctx context.Context, req *proto.GetPermissionsRequest) (*proto.GetPermissionsResponse, error) {
+func (s *permService) CreateServicePermissions(ctx context.Context, req *proto.CreateServicePermissionsRequest) (*proto.CreateServicePermissionsResponse, error) {
+	permissions := &models.Permission{
+		Read:      req.CanRead,
+		Write:     req.CanWrite,
+		Manage:    req.CanManage,
+		ServiceID: req.ServiceId,
+		RoleId:    req.RoleId,
+	}
+
+	_, err := s.db.NewInsert().Model(permissions).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.CreateServicePermissionsResponse{
+		Status: http.StatusCreated,
+	}, nil
+}
+
+func (s *permService) GetServicePermissions(ctx context.Context, req *proto.GetServicePermissionsRequest) (*proto.GetServicePermissionsResponse, error) {
 	var service models.Service
 	if err := s.db.NewSelect().
 		Model(&service).
@@ -101,7 +101,7 @@ func (s *permService) GetServicePermissions(ctx context.Context, req *proto.GetP
 		}
 	}
 
-	return &proto.GetPermissionsResponse{
+	return &proto.GetServicePermissionsResponse{
 		Permissions: resSlice,
 	}, nil
 }

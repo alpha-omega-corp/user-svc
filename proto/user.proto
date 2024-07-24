@@ -16,13 +16,13 @@ service UserService {
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
   rpc AssignUser(AssignUserRequest) returns (AssignUserResponse) {}
 
-  rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
-  rpc GetRoles(GetRolesRequest) returns (GetRolesResponse) {}
-
   rpc GetServices(GetServicesRequest) returns (GetServicesResponse) {}
-  rpc CreatePermission(CreatePermissionRequest) returns (CreatePermissionResponse) {}
-  rpc GetPermissions(GetPermissionsRequest) returns (GetPermissionsResponse) {}
+  rpc CreateServicePermissions(CreateServicePermissionsRequest) returns (CreateServicePermissionsResponse) {}
+  rpc GetServicePermissions(GetServicePermissionsRequest) returns (GetServicePermissionsResponse) {}
   rpc GetUserPermissions(GetUserPermissionsRequest) returns (GetUserPermissionsResponse) {}
+
+  rpc GetRoles(GetRolesRequest) returns (GetRolesResponse) {}
+  rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
 }
 
 message GetUserPermissionsRequest {
@@ -34,11 +34,11 @@ message GetUserPermissionsResponse {
 }
 
 
-message GetPermissionsRequest {
+message GetServicePermissionsRequest {
   int64 serviceId = 1;
 }
 
-message GetPermissionsResponse {
+message GetServicePermissionsResponse {
   repeated Permission permissions = 1;
 }
 
@@ -51,12 +51,12 @@ message Permission {
   bool canManage = 6;
 }
 
-message CreatePermissionResponse {
+message CreateServicePermissionsResponse {
   int64 status = 1;
   string error = 2;
 }
 
-message CreatePermissionRequest {
+message CreateServicePermissionsRequest {
   int64 roleId = 1;
   int64 serviceId = 2;
   bool canRead = 3;

@@ -1,8 +1,7 @@
-package services
+package handlers
 
 import (
 	"context"
-	"fmt"
 	"github.com/alpha-omega-corp/user-svc/pkg/models"
 	"github.com/alpha-omega-corp/user-svc/proto"
 	"github.com/uptrace/bun"
@@ -92,14 +91,11 @@ func (s *userService) Create(ctx context.Context, req *proto.CreateUserRequest) 
 }
 
 func (s *userService) Update(ctx context.Context, req *proto.UpdateUserRequest) (*proto.UpdateUserResponse, error) {
-	user := new(models.User)
-	if err := s.db.NewSelect().Model(user).Where("id = ?", req.Id).Scan(ctx); err != nil {
-		return nil, err
-	}
 
-	user.Name = req.Name
-	_, err := s.db.NewUpdate().Model(user).Where("id = ?", req.Id).Exec(ctx)
-	if err != nil {
+	if err := s.db.NewSelect().Model(&models.User{
+		Name: req.Name,
+	}).
+		Where("id = ?", req.Id).Scan(ctx); err != nil {
 		return nil, err
 	}
 
@@ -122,8 +118,7 @@ func (s *userService) Delete(ctx context.Context, req *proto.DeleteUserRequest) 
 func (s *userService) Assign(ctx context.Context, req *proto.AssignUserRequest) (*proto.AssignUserResponse, error) {
 	userRoles := new([]models.UserToRole)
 
-	err := s.db.NewSelect().Model(userRoles).Where("user_id = ?", req.UserId).Scan(ctx)
-	if err != nil {
+	if err := s.db.NewSelect().Model(userRoles).Where("user_id = ?", req.UserId).Scan(ctx); err != nil {
 		return nil, err
 	}
 
@@ -137,9 +132,6 @@ func (s *userService) Assign(ctx context.Context, req *proto.AssignUserRequest) 
 	for idx, reqRole := range req.Roles {
 		requestRoles[reqRole] = int64(idx)
 	}
-
-	fmt.Println("requestRoles", requestRoles)
-	fmt.Println("currentRoles", currentRoles)
 
 	// Add roles that are in the request
 	for _, roleId := range req.Roles {
@@ -155,7 +147,7 @@ func (s *userService) Assign(ctx context.Context, req *proto.AssignUserRequest) 
 		}
 	}
 
-	// Delete roles that are not in the request
+	// Delete user's roles that are not in the request
 	for roleId := range currentRoles {
 		if _, ok := requestRoles[roleId]; !ok {
 			_, err := s.db.NewDelete().Model(&models.UserToRole{}).
